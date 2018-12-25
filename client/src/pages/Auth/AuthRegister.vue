@@ -35,14 +35,14 @@
     </div>
     <div class="row align-items-center">
       <base-button @click="register()" slot="footer" type="primary" fill>Registrieren</base-button>
-      <router-link to="/auth/login" slot="footer" class="ml-4">Schon dabei?</router-link>
+      <router-link to="/login" slot="footer" class="ml-4">Schon dabei?</router-link>
     </div>
   </card>
 </template>
 
 <script>
 import router from '@/router/index.js'
-import AuthService from '@/services/AuthService'
+import axios from 'axios'
 export default {
   props: {
       model: {
@@ -66,44 +66,22 @@ export default {
       }
     },
     methods: {
-      async register () {
-        try {
-          const response = await AuthService.register({
-            first: this.input.first,
-            last: this.input.last,
-            email: this.input.email,
-            password: this.input.password
-          })
-          this.response = response.data.data
-          this.resStatus = String(response.data.status)
-          if(this.resStatus === '201') {
-            this.authenticate()
-          } else if (this.resStatus === '406') {
-            alert('Email already exists')
-          }
-        } catch (e) {
-          console.error(e)
+      register () {
+        const requestBody = {
+          ...this.model
         }
-      },
-      async authenticate () {
-        try {
-          const response = await AuthService.authenticate({
-            email: this.input.email,
-            password: this.input.password
-          })
-          this.response = response.data.data
-          this.resStatus = String(response.status)
-          this.$store.commit('setToken', this.response.token)
-          let uid = this.response.user._id
-          this.$store.commit('setUserId', uid)
-          console.log(response.data)
-          if(this.resStatus === '201') {
-            console.log('201 auth')
-            this.$router.push('/dashboard')
+        const config = {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
           }
-        } catch (e) {
-          alert('Authentication Error: ' + e)
         }
+        axios.post('http://localhost:3000/api/auth/register', requestBody, config)
+          .then((result) => {
+            console.log(result)
+          })
+          .catch((err) => {
+            console.error(err)
+          })
       }
     }
 }

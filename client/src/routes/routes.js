@@ -2,6 +2,7 @@ import DashboardLayout from '@/views/dashboard/DashboardLayout.vue'
 // GeneralViews
 import NotFound from '@/pages/NotFoundPage.vue'
 import LoginView from '@/pages/Auth/AuthLogin.vue'
+import RegisterView from '@/pages/Auth/AuthRegister.vue'
 
 // Admin pages
 import Dashboard from '@/pages/Dashboard.vue'
@@ -71,6 +72,15 @@ const routes = [
     path: '/login',
     name: 'login',
     component: LoginView,
+    meta: {
+      public: true,
+      onlyWhenLoggedOut: true
+    }
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: RegisterView,
     meta: {
       public: true,
       onlyWhenLoggedOut: true
